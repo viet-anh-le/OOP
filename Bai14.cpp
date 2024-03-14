@@ -8,7 +8,7 @@ vector <vector <vector <float>>> center_block;
 int m, n;
 float width, height;
 
-void sol_a(){
+void Nhap(){
     node_land.clear();
     for (int i = 1; i <= 4; i++){
         float x, y;
@@ -17,6 +17,7 @@ void sol_a(){
     }
     cin >> m >> n;
     cin >> width >> height;
+
     center_block.clear();
     center_block.resize(n);
     float width_mng = (node_land[1].first - node_land[0].first)/m;
@@ -32,7 +33,9 @@ void sol_a(){
             center_block[i][j].push_back(height_mng);
         }
     }
+}
 
+void sol_a(){
     for (int i = 0; i < n; i++){
         for (int j = 0; j < m; j++){
             for (int k = 0; k < 4; k++){
@@ -45,11 +48,24 @@ void sol_a(){
 }
 
 void sol_b(){
-    
+
 }
 
+void sol_c(){
+    Nhap();
+    float d1;
+    cin >> d1;
+    float dist_x = center_block[0][1][0] - center_block[0][0][0] - width - 2 * d1;
+    cout << dist_x << '\n';
+    if (n <= 1) cout << "undefined\n";
+    else{
+        float dist_y = center_block[1][0][1] - center_block[0][0][1] - height - 2 * d1;
+        cout << dist_y << '\n';
+    }
+}
 
 int main(){
-    sol_a();
+    //sol_a();
+    sol_c();
     return 0;
 }
