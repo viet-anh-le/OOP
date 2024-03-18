@@ -158,6 +158,7 @@ struct duongnoi{
 };
 
 vector <duongnoi> intersec;
+vector <duongnoi> intersec_bound;
 
 int cmp(const duongnoi &a, const duongnoi &b){
     if (a.diem1.second == b.diem1.second){
@@ -206,13 +207,13 @@ void sol_e(){
         duongnoi x;
         x.diem2 = boundA[1][j][0];
         x.diem1.first = x.diem2.first;
-        x.diem1.second = x.diem2.second - 2;
-        intersec.push_back(x);
+        x.diem1.second = x.diem2.second - 2 * d1;
+        intersec_bound.push_back(x);
 
         x.diem2 = boundA[1][j][1];
         x.diem1.first = x.diem2.first;
-        x.diem1.second = x.diem2.second - 2;
-        intersec.push_back(x);
+        x.diem1.second = x.diem2.second - 2 * d1;
+        intersec_bound.push_back(x);
     }
 
     //duong i = n - 1
@@ -221,13 +222,13 @@ void sol_e(){
         duongnoi x;
         x.diem1 = boundA[n][j][2];
         x.diem2.first = x.diem1.first;
-        x.diem2.second = x.diem1.second + 2;
-        intersec.push_back(x);
+        x.diem2.second = x.diem1.second + 2 * d1;
+        intersec_bound.push_back(x);
 
         x.diem1 = boundA[n][j][3];
         x.diem2.first = x.diem1.first;
-        x.diem2.second = x.diem1.second + 2;
-        intersec.push_back(x);
+        x.diem2.second = x.diem1.second + 2 * d1;
+        intersec_bound.push_back(x);
     }
 
     //duong j = 0
@@ -235,37 +236,40 @@ void sol_e(){
     for (int i = 1; i <= n; i++){
         duongnoi x;
         x.diem2 = boundA[i][1][0];
-        x.diem1.first = x.diem2.first - 2;
+        x.diem1.first = x.diem2.first - 2 * d1;
         x.diem1.second = x.diem2.second;
-        intersec.push_back(x);
+        intersec_bound.push_back(x);
 
         x.diem2 = boundA[i][1][3];
-        x.diem1.first = x.diem2.first - 2;
+        x.diem1.first = x.diem2.first - 2 * d1;
         x.diem1.second = x.diem2.second;
-        intersec.push_back(x);
+        intersec_bound.push_back(x);
     }
 
     //duong j = m - 1;
     for (int i = 1; i <= n; i++){
         duongnoi x;
         x.diem1 = boundA[i][m][1];
-        x.diem2.first = x.diem1.first + 2;
+        x.diem2.first = x.diem1.first + 2 * d1;
         x.diem2.second = x.diem1.second;
-        intersec.push_back(x);
+        intersec_bound.push_back(x);
 
         x.diem1 = boundA[i][m][2];
-        x.diem2.first = x.diem1.first + 2;
+        x.diem2.first = x.diem1.first + 2 * d1;
         x.diem2.second = x.diem1.second;
-        intersec.push_back(x);
+        intersec_bound.push_back(x);
     }
-
-    sort (intersec.begin(), intersec.end(), cmp);
 
     //Result
     for (int i = 0; i < (int)intersec.size(); i++){
         cout << intersec[i].diem1.first << ',' << intersec[i].diem1.second << ' ';
         cout << intersec[i].diem2.first << ',' << intersec[i].diem2.second << '\n';
     }
+
+    for (int i = 0; i < (int)intersec_bound.size(); i++){
+        cout << intersec_bound[i].diem1.first << ',' << intersec_bound[i].diem1.second << ' ';
+        cout << intersec_bound[i].diem2.first << ',' << intersec_bound[i].diem2.second << '\n';
+    }    
 }
 
 vector <duongnoi> p_intersec;
@@ -325,10 +329,8 @@ void sol_f(){
         }
     }
 
-    //j = 0
-    for (int i = 0; i <= n; i++){
-        
-    }
+    //i = 0
+    
 
     for (int i = 0; i < (int)p_intersec.size(); i++){
         cout << p_intersec[i].diem1.first << ',' << p_intersec[i].diem1.second << ' ';
@@ -336,9 +338,71 @@ void sol_f(){
     }
 }
 
+struct Point{
+    float x, y;
+};
+
+void sol_g(){
+    vector <duongnoi> ans;
+    sol_e();
+    float d3;
+    cin >> d3;
+    fflush(stdin);
+    vector <duongnoi> intersec_bound_x;
+    vector <duongnoi> intersec_bound_y;
+    for (int i = 0; i < (int)intersec_bound.size(); i++){
+        duongnoi tmp = intersec_bound[i];
+        if (tmp.diem1.first == tmp.diem2.first){
+            intersec_bound_y.push_back(tmp);
+        }
+        else intersec_bound_x.push_back(tmp);
+    }
+    char c;
+    cin >> c;
+    Point point1, point2;
+    cin >> point1.x >> point1.y >> point2.x >> point2.y;
+    fflush(stdin);
+    if (point1.x == point2.x){
+        for (int i = 0; i < intersec_bound_x.size(); i++){
+            duongnoi tmp = intersec_bound_x[i];
+            duongnoi able;
+            if (tmp.diem1.second == point1.y && (tmp.diem1.first == point1.x + d2 || tmp.diem1.first == point1.x - d2)){
+                able.diem1 = tmp.diem1;
+                able.diem2.first = point1.x;
+                able.diem2.second = point1.y;
+                ans.push_back(able);
+
+                able.diem1.first = tmp.diem1.first;
+                able.diem1.second = tmp.diem1.second + point2.y - point1.y;
+                able.diem2.first = point2.x;
+                able.diem2.second = point2.y;
+                ans.push_back(able);
+                break;
+            }
+            else{
+                if (tmp.diem2.second == point1.y && (tmp.diem2.first == point1.x + d2 || tmp.diem2.first == point1.x - d2)){
+                able.diem1 = tmp.diem2;
+                able.diem2.first = point1.x;
+                able.diem2.second = point1.y;
+                ans.push_back(able);
+
+                able.diem1.first = tmp.diem2.first;
+                able.diem1.second = tmp.diem2.second + point2.y - point1.y;
+                able.diem2.first = point2.x;
+                able.diem2.second = point2.y;
+                ans.push_back(able);
+                break;
+                }
+            }
+        }
+    }
+}
+
 
 int main(){
-    sol_a();
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    //sol_a();
     //sol_c();
     //sol_d();
     //sol_e();
