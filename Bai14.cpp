@@ -59,8 +59,38 @@ void sol_a(){
     }
 }
 
-void sol_b(){
+vector<pair<float, float> > nodesquare;
+void solb(float i, float j, float d)
+{
+    float d1 = d + width/ 2;
+    float d2 = d + height/ 2;
+    float distant1[4] = {-d1, d1, d1, -d1};
+    float distant2[4] = {-d2, -d2, d2, d2};
+    for(int k = 0;k<4;k++)
+    {
+        pair <float,float> x;
+        x.first = i + distant1[k];
+        x.second = j + distant2[k]; 
+        nodesquare.push_back(x);
+    }
+    for (int k = 0; k < 4; k++)
+    {
+        cout << nodesquare[k].first << "," << nodesquare[k].second << " ";
+    }
+    nodesquare.clear();
+    cout << endl;
+}
 
+void sol_b()
+{
+    float D1, D2;
+    cout << "Nhap d1 va d2: ";
+    cin >> D1 >> D2;
+    cout << "Nhap toa do tam: ";
+    float i, j;
+    cin >> i >> j;
+    solb(i, j, D1);
+    solb(i, j, D1 + D2);
 }
 
 void sol_c(){
@@ -272,132 +302,148 @@ void sol_e(){
     }    
 }
 
-vector <duongnoi> p_intersec;
+vector<int> insertline_x;
+vector<int> insertline_y;
+float d3;
+float Y1, Y2, X1, X2;
 
-void sol_f(){
-    sol_d();
-    float d3;
-    cin >> d3;
-    for (int i = 1; i <= n; i++){
-        for (int j = 1; j <= m - 1; j++){
-            for (int d = d3; d < height + d2; d += d3){
-                duongnoi x;
-                x.diem1.first = boundA[i][j][1].first;
-                x.diem1.second = boundA[i][j][1].second + d;
-                x.diem2.first = boundA[i][j + 1][0].first;
-                x.diem2.second = x.diem1.second;
-                p_intersec.push_back(x);
-            }
-        }
-    }
-
-    for (int i = 1; i <= n - 1; i++){
-        for (int j = 1; j <= m; j++){
-            for (int d = d3; d < width + d2; d+= d3){
-                duongnoi x;
-                x.diem1.first = boundA[i][j][3].first + d;
-                x.diem1.second = boundA[i][j][3].second;
-                x.diem2.first = x.diem1.first;
-                x.diem2.second = boundA[i + 1][j][0].second;
-                p_intersec.push_back(x);
-            }
-        }
-    }
-
-    
-    //i = 1
-    for (int j = 1; j <= m; j++){
-        for (int d = d3; d < width + d2; d += d3){
-            duongnoi x;
-            x.diem1.first = boundA[1][j][0].first + d;
-            x.diem1.second = bound_boundA[0].second;
-            x.diem2.first = x.diem1.first;
-            x.diem2.second = x.diem1.second + d2;
-            p_intersec.push_back(x);
-        }
-    }
-
-    //i = n
-    for (int j = 1; j <= m; j++){
-        for (int d = d3; d < width + d2; d += d3){
-            duongnoi x;
-            x.diem1.first = boundA[n][j][3].first + d;
-            x.diem1.second = boundA[n][j][3].second;
-            x.diem2.first = x.diem1.first;
-            x.diem2.second = x.diem1.second + d2;
-            p_intersec.push_back(x);
-        }
-    }
-
-    //i = 0
-    
-
-    for (int i = 0; i < (int)p_intersec.size(); i++){
-        cout << p_intersec[i].diem1.first << ',' << p_intersec[i].diem1.second << ' ';
-        cout << p_intersec[i].diem2.first << ',' << p_intersec[i].diem2.second << '\n';
+void insert_y(float y1, float y2)
+{
+    for (int i = y1 + d3; i < y2; i += d3)
+    {
+        insertline_y.push_back(i);
     }
 }
 
-struct Point{
-    float x, y;
-};
+void insert_x(float x1, float x2)
+{
+    for (int i = x1 + d3; i < x2; i += d3)
+    {
+
+        insertline_x.push_back(i);
+    }
+}
+
+void insertcolumn()
+{
+    for (int i = 1; i <= m; i++)
+    {
+        Y2 = Y1 + d2;
+        insert_y(Y1, Y2);
+        Y1 = Y2;
+        Y2 = Y1 + height + d2;
+        insert_y(Y1, Y2);
+        Y1 = Y2;
+    }
+    Y2 = Y1 + d2;
+    insert_y(Y1, Y2);
+}
+void insertrow()
+{
+    for (int j = 1; j <= m; j++)
+    {
+        X1 = boundA[1][j][0].first;
+        X2 = boundA[1][j][1].first;
+        insert_x(X1, X2);
+    }
+}
+
+void sol_f()
+{
+    sol_e();
+    cin >> d3;
+    Y1 = bound_boundA[0].second;
+    insertcolumn();
+    insertrow();
+    for (int j = 1; j <= m - 1; j++)
+    {
+        for (int k = 0; k < insertline_y.size(); k++)
+        {
+            cout << boundA[1][j][1].first << "," << insertline_y[k] << " ";
+            cout << boundA[1][j + 1][0].first << "," << insertline_y[k] << endl;
+        }
+    }
+
+    for (int k = 0; k < insertline_y.size(); k++)
+    {
+        cout << bound_boundA[0].first << "," << insertline_y[k] << " ";
+        cout << boundA[1][1][0].first << "," << insertline_y[k] << endl;
+    }
+    for (int k = 0; k < insertline_y.size(); k++)
+    {
+        cout << boundA[1][m][1].first << "," << insertline_y[k] << " ";
+        cout << bound_boundA[1].first << "," << insertline_y[k] << endl;
+    }
+
+    for (int i = 1; i <= n - 1; i++)
+    {
+        for (int k = 0; k < insertline_x.size(); k++)
+        {
+            cout << insertline_x[k] << "," << boundA[i][1][3].second << " ";
+            cout << insertline_x[k] << "," << boundA[i + 1][1][0].second << endl;
+        }
+    }
+    for (int k = 0; k < insertline_x.size(); k++)
+    {
+        cout << insertline_x[k] << "," << bound_boundA[0].second  << " ";
+        cout << insertline_x[k] << "," << boundA[1][1][0].second << endl;
+    }
+    for (int k = 0; k < insertline_x.size(); k++)
+    {
+        cout << insertline_x[k] << "," << boundA[n][1][3].second << " ";
+        cout << insertline_x[k] << "," << bound_boundA[3].second << endl;
+    }
+}
+
+
+pair <float,float> find(pair <float, float> point){
+    for (int i = 0; i < intersec_bound.size(); i++){
+        duongnoi tmp = intersec_bound[i];
+        if (tmp.diem1.first == point.first && fabs(tmp.diem1.second - point.second) == d2){
+            return tmp.diem1;
+        }
+        if (tmp.diem2.first == point.first && fabs(tmp.diem2.second - point.second) == d2){
+            return tmp.diem2;
+        }
+        if (tmp.diem1.second == point.second && fabs(tmp.diem1.first - point.first) == d2){
+            return tmp.diem1;
+        }
+        if (tmp.diem2.second == point.second && fabs(tmp.diem2.first - point.first) == d2){
+            return tmp.diem2;
+        }
+    }
+}
 
 void sol_g(){
     vector <duongnoi> ans;
-    sol_e();
-    float d3;
-    cin >> d3;
-    fflush(stdin);
-    vector <duongnoi> intersec_bound_x;
-    vector <duongnoi> intersec_bound_y;
-    for (int i = 0; i < (int)intersec_bound.size(); i++){
-        duongnoi tmp = intersec_bound[i];
-        if (tmp.diem1.first == tmp.diem2.first){
-            intersec_bound_y.push_back(tmp);
+    sol_f();
+    for (int i = 1; i <= 2; i++){
+        char c;
+        cin >> c;
+        vector<pair<float, float>> point;
+        for (int i = 1; i <= 2; i++){
+            float x, y;
+            cin >> x >> y;
+            point.push_back(make_pair(x,y));
         }
-        else intersec_bound_x.push_back(tmp);
+        for (int i = 0; i <= 1; i++){
+            duongnoi tmp;
+            tmp.diem1 = find(point[i]);
+            tmp.diem2 = point[i];
+            ans.push_back(tmp);
+        }
+        fflush(stdin);
     }
-    char c;
-    cin >> c;
-    Point point1, point2;
-    cin >> point1.x >> point1.y >> point2.x >> point2.y;
-    fflush(stdin);
-    if (point1.x == point2.x){
-        for (int i = 0; i < intersec_bound_x.size(); i++){
-            duongnoi tmp = intersec_bound_x[i];
-            duongnoi able;
-            if (tmp.diem1.second == point1.y && (tmp.diem1.first == point1.x + d2 || tmp.diem1.first == point1.x - d2)){
-                able.diem1 = tmp.diem1;
-                able.diem2.first = point1.x;
-                able.diem2.second = point1.y;
-                ans.push_back(able);
-
-                able.diem1.first = tmp.diem1.first;
-                able.diem1.second = tmp.diem1.second + point2.y - point1.y;
-                able.diem2.first = point2.x;
-                able.diem2.second = point2.y;
-                ans.push_back(able);
-                break;
-            }
-            else{
-                if (tmp.diem2.second == point1.y && (tmp.diem2.first == point1.x + d2 || tmp.diem2.first == point1.x - d2)){
-                able.diem1 = tmp.diem2;
-                able.diem2.first = point1.x;
-                able.diem2.second = point1.y;
-                ans.push_back(able);
-
-                able.diem1.first = tmp.diem2.first;
-                able.diem1.second = tmp.diem2.second + point2.y - point1.y;
-                able.diem2.first = point2.x;
-                able.diem2.second = point2.y;
-                ans.push_back(able);
-                break;
-                }
-            }
-        }
+    for (int i = 0; i < ans.size(); i++){
+        cout << ans[i].diem1.first << ',' << ans[i].diem1.second << ' ';
+        cout << ans[i].diem2.first << ',' << ans[i].diem2.second << '\n';
     }
 }
 
+
+void sol_h(){
+    
+}
 
 int main(){
     ios_base::sync_with_stdio(0);
@@ -407,5 +453,6 @@ int main(){
     //sol_d();
     //sol_e();
     //sol_f();
+    sol_g();
     return 0;
 }
